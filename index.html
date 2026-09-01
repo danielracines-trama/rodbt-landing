@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Información accesible sobre RO DBT y terapia grupal para personas que viven con sobrecontrol.">
+<title>RO DBT | Una forma más flexible de relacionarte contigo y con los demás</title>
+<style>
+:root{
+  --ink:#203038; --muted:#5e7076; --bg:#f7faf8; --card:#ffffff;
+  --teal:#287f78; --teal-dark:#1d5e5a; --mint:#dff1ec;
+  --peach:#f8dfd0; --lav:#e8e4f5; --yellow:#f7edc8;
+  --line:#dce8e4; --shadow:0 18px 45px rgba(32,48,56,.10);
+  --radius:24px; --max:1120px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+color:var(--ink);background:var(--bg);line-height:1.65}
+a{color:inherit}
+.container{width:min(var(--max),calc(100% - 36px));margin:auto}
+.skip{position:absolute;left:-999px;top:auto}.skip:focus{left:12px;top:12px;background:#fff;padding:10px 14px;z-index:20}
+header{position:sticky;top:0;z-index:10;background:rgba(247,250,248,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav{height:70px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.logo{font-weight:850;letter-spacing:-.03em;color:var(--teal-dark);text-decoration:none}
+.logo span{font-weight:500;color:var(--muted)}
+.navlinks{display:flex;gap:22px;align-items:center;font-size:.92rem}
+.navlinks a{text-decoration:none;color:var(--muted)}
+.navlinks a:hover,.navlinks a:focus{color:var(--teal-dark)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 19px;border-radius:999px;
+background:var(--teal);color:white;text-decoration:none;font-weight:750;border:2px solid var(--teal);transition:.2s}
+.btn:hover{transform:translateY(-1px);background:var(--teal-dark);border-color:var(--teal-dark)}
+.btn.alt{background:transparent;color:var(--teal-dark)}
+.hero{padding:72px 0 52px;overflow:hidden}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:55px;align-items:center}
+.eyebrow{display:inline-block;padding:7px 12px;border-radius:999px;background:var(--mint);color:var(--teal-dark);font-weight:800;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em}
+h1{font-size:clamp(2.55rem,6vw,4.8rem);line-height:1.02;letter-spacing:-.055em;margin:18px 0}
+h2{font-size:clamp(1.9rem,4vw,3rem);line-height:1.08;letter-spacing:-.04em;margin:0 0 15px}
+h3{line-height:1.2;margin:0 0 8px}
+.lead{font-size:1.18rem;color:var(--muted);max-width:650px}
+.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:27px}
+.hero-art{background:linear-gradient(145deg,#e2f2ee,#f7e9df 75%);border-radius:38px;padding:20px;box-shadow:var(--shadow)}
+.hero-art svg{display:block;width:100%;height:auto}
+section{padding:76px 0}
+.section-head{max-width:720px;margin-bottom:30px}
+.muted{color:var(--muted)}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:25px;box-shadow:0 8px 25px rgba(32,48,56,.05)}
+.icon{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;font-size:1.4rem;margin-bottom:17px}
+.mint{background:var(--mint)} .peach{background:var(--peach)} .lav{background:var(--lav)} .yellow{background:var(--yellow)}
+.callout{display:grid;grid-template-columns:1fr 1fr;gap:25px;background:var(--teal-dark);color:white;border-radius:32px;padding:38px}
+.callout p{color:#d9eeea}.callout .mini{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:20px}
+.pillars{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.pillar{display:flex;gap:17px;background:white;border:1px solid var(--line);padding:23px;border-radius:22px}
+.number{min-width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--mint);color:var(--teal-dark);font-weight:900}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.step{background:white;border:1px solid var(--line);border-radius:20px;padding:21px}
+.step strong{display:block;color:var(--teal-dark);font-size:.82rem;text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px}
+.faq{max-width:850px}
+details{background:white;border:1px solid var(--line);border-radius:18px;margin:11px 0;padding:18px 20px}
+summary{cursor:pointer;font-weight:800}
+details p{margin:12px 0 0;color:var(--muted)}
+.cta{background:linear-gradient(135deg,var(--peach),var(--lav));border-radius:34px;padding:42px;text-align:center}
+.cta p{max-width:680px;margin:10px auto 24px;color:var(--muted)}
+.note{font-size:.86rem;color:var(--muted)}
+footer{padding:38px 0;border-top:1px solid var(--line);color:var(--muted);font-size:.88rem}
+footer .foot{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.mobile-only{display:none}
+@media(max-width:850px){
+ .hero-grid,.callout{grid-template-columns:1fr}
+ .cards,.steps{grid-template-columns:1fr 1fr}
+ .pillars{grid-template-columns:1fr}
+ .navlinks{display:none}.mobile-only{display:block}
+}
+@media(max-width:560px){
+ .container{width:min(var(--max),calc(100% - 26px))}
+ .hero{padding-top:45px}.cards,.steps{grid-template-columns:1fr}
+ section{padding:56px 0}.callout,.cta{padding:27px}
+ h1{font-size:2.75rem}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#contenido">Saltar al contenido</a>
+<header>
+  <div class="container nav">
+    <a class="logo" href="#">TRAMA <span>· RO DBT</span></a>
+    <nav class="navlinks" aria-label="Navegación principal">
+      <a href="#que-es">¿Qué es?</a><a href="#para-quien">¿Para quién?</a><a href="#grupo">El grupo</a><a href="#compromisos">Compromisos</a><a href="#faq">Preguntas</a>
+    </nav>
+    <a class="btn mobile-only" href="#contacto">Más información</a>
+  </div>
+</header>
+
+<main id="contenido">
+<section class="hero">
+<div class="container hero-grid">
+  <div>
+    <span class="eyebrow">Terapia basada en habilidades</span>
+    <h1>Menos rigidez.<br>Más conexión.</h1>
+    <p class="lead">RO DBT es un enfoque psicoterapéutico pensado para personas que tienden a controlar mucho sus emociones, pensamientos y conductas. El objetivo no es “dejar de tener control”, sino desarrollar <strong>más flexibilidad, apertura y conexión con otras personas</strong>.</p>
+    <div class="actions">
+      <a class="btn" href="#para-quien">Quiero saber si es para mí</a>
+      <a class="btn alt" href="#grupo">Conocer el grupo ↓</a>
+    </div>
+  </div>
+  <div class="hero-art" aria-label="Ilustración de dos personas conectándose mediante una conversación">
+    <svg viewBox="0 0 620 520" role="img">
+      <title>Dos personas conversando con apertura y conexión</title>
+      <circle cx="500" cy="105" r="68" fill="#f7edc8"/>
+      <path d="M70 400 C150 280 220 270 295 350 C350 410 420 430 550 355" fill="none" stroke="#287f78" stroke-width="8" stroke-linecap="round"/>
+      <circle cx="205" cy="220" r="70" fill="#f0c6ad"/>
+      <path d="M135 220c5-65 132-85 141 8-33-26-84-31-141-8z" fill="#203038"/>
+      <path d="M130 395c4-86 35-121 75-121s72 35 76 121" fill="#e8e4f5"/>
+      <circle cx="420" cy="225" r="70" fill="#d8a982"/>
+      <path d="M350 220c8-71 128-86 143 2-39-25-91-28-143-2z" fill="#203038"/>
+      <path d="M345 395c4-86 35-121 75-121s72 35 76 121" fill="#dff1ec"/>
+      <path d="M280 145 Q310 95 370 145" fill="none" stroke="#287f78" stroke-width="5" stroke-linecap="round"/>
+      <path d="M296 117 Q323 84 349 116" fill="none" stroke="#287f78" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="312" cy="74" r="9" fill="#287f78"/><circle cx="344" cy="60" r="7" fill="#287f78"/>
+    </svg>
+  </div>
+</div>
+</section>
+
+<section id="que-es">
+<div class="container">
+  <div class="section-head">
+    <span class="eyebrow">Primero, lo esencial</span>
+    <h2>¿Qué significa “sobrecontrol”?</h2>
+    <p class="muted">El sobrecontrol puede aparecer de maneras muy distintas. No es un defecto de carácter ni una etiqueta para definirte: es un patrón de respuesta que puede aprender a flexibilizarse.</p>
+  </div>
+  <div class="cards">
+    <article class="card"><div class="icon mint">🧠</div><h3>Pensarlo todo</h3><p class="muted">Analizar, anticipar y revisar mucho antes de actuar. A veces cuesta tolerar la incertidumbre o cometer errores.</p></article>
+    <article class="card"><div class="icon peach">🤐</div><h3>Guardar lo que sientes</h3><p class="muted">Controlar la expresión emocional, evitar mostrar vulnerabilidad o intentar no “molestar” a los demás.</p></article>
+    <article class="card"><div class="icon lav">🧩</div><h3>Ser muy exigente</h3><p class="muted">Altos estándares, perfeccionismo o una fuerte necesidad de hacer las cosas correctamente.</p></article>
+    <article class="card"><div class="icon yellow">🌱</div><h3>Evitar el riesgo</h3><p class="muted">Preferir lo conocido y predecible, incluso cuando eso limita experiencias, relaciones o nuevas oportunidades.</p></article>
+    <article class="card"><div class="icon mint">💬</div><h3>Conectar puede costar</h3><p class="muted">Sentirse distante, fuera de lugar o inseguro/a en situaciones sociales, aun deseando tener relaciones más cercanas.</p></article>
+    <article class="card"><div class="icon peach">🔁</div><h3>Quedarse en la cabeza</h3><p class="muted">Pensar mucho sobre lo ocurrido, lo que otros quisieron decir o cómo deberías haber respondido.</p></article>
+  </div>
+</div>
+</section>
+
+<section id="para-quien">
+<div class="container">
+  <div class="callout">
+    <div>
+      <span class="eyebrow" style="background:#dff1ec">Puede ser una opción</span>
+      <h2 style="margin-top:16px">¿RO DBT podría encajar contigo?</h2>
+      <p>No necesitas identificarte con todos estos ejemplos. La evaluación profesional es la mejor manera de determinar si este tratamiento es adecuado para ti.</p>
+    </div>
+    <div>
+      <div class="mini"><strong>Podría interesarte si…</strong><br><br>• te cuesta ser flexible cuando algo no sale como esperabas;<br>• sueles inhibir o controlar tus emociones;<br>• quieres mejorar tus relaciones y sentir más conexión;<br>• el perfeccionismo o la autoexigencia te agotan;<br>• quieres aprender a exponerte de manera gradual a experiencias nuevas.</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<section>
+<div class="container">
+  <div class="section-head">
+    <span class="eyebrow">¿Qué se trabaja?</span>
+    <h2>Habilidades para vivir con más flexibilidad</h2>
+    <p class="muted">RO DBT pone especial atención en la apertura a la experiencia, la comunicación social y la capacidad de responder de manera más flexible.</p>
+  </div>
+  <div class="pillars">
+    <article class="pillar"><div class="number">1</div><div><h3>Apertura</h3><p class="muted">Aprender a recibir información que desafía nuestras ideas sin cerrarnos automáticamente.</p></div></article>
+    <article class="pillar"><div class="number">2</div><div><h3>Flexibilidad</h3><p class="muted">Encontrar alternativas cuando una estrategia conocida deja de funcionar.</p></div></article>
+    <article class="pillar"><div class="number">3</div><div><h3>Conexión social</h3><p class="muted">Practicar señales y conductas que favorecen relaciones más cálidas, espontáneas y auténticas.</p></div></article>
+    <article class="pillar"><div class="number">4</div><div><h3>Vulnerabilidad</h3><p class="muted">Experimentar con una expresión emocional más genuina y tolerar el riesgo interpersonal de forma gradual.</p></div></article>
+  </div>
+</div>
+</section>
+
+<section id="grupo">
+<div class="container">
+  <div class="section-head">
+    <span class="eyebrow">La experiencia grupal</span>
+    <h2>¿Cómo es participar en un grupo RO DBT?</h2>
+    <p class="muted">El formato grupal permite aprender habilidades, observar diferentes perspectivas y practicar nuevas formas de relacionarse en un contexto estructurado y respetuoso.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><strong>01 · Llegar</strong><h3>Un espacio seguro</h3><p class="muted">Conocer el encuadre, al equipo y a otras personas que están trabajando objetivos similares.</p></div>
+    <div class="step"><strong>02 · Aprender</strong><h3>Habilidades concretas</h3><p class="muted">Se explican conceptos y estrategias que pueden practicarse entre sesiones.</p></div>
+    <div class="step"><strong>03 · Practicar</strong><h3>Salir de lo automático</h3><p class="muted">Las habilidades se llevan a situaciones reales, con oportunidades de observar qué funciona.</p></div>
+    <div class="step"><strong>04 · Integrar</strong><h3>Convertirlo en experiencia</h3><p class="muted">El objetivo es que la flexibilidad y la conexión se vuelvan más disponibles en la vida cotidiana.</p></div>
+  </div>
+  <p class="muted" style="margin-top:22px;max-width:650px">El programa lo facilita un psicólogo clínico con formación acreditada específicamente en RO DBT, siguiendo el manual oficial del modelo. En TRAMA lo impartimos en un formato de 3 módulos y 20 sesiones, en grupo cerrado o semicerrado, generalmente como complemento de un proceso individual.</p>
+</div>
+</section>
+
+<section id="compromisos">
+<div class="container">
+  <div class="section-head">
+    <span class="eyebrow">Antes de decir que sí</span>
+    <h2>Lo que el programa te va a pedir</h2>
+    <p class="muted">Ingresar a un grupo RO DBT implica algunos acuerdos explícitos. No son formalidades: son lo que hace posible que el espacio funcione para ti y para el resto del grupo.</p>
+  </div>
+  <div class="pillars">
+    <article class="pillar"><div class="number">1</div><div><h3>Asistencia al ciclo completo</h3><p class="muted">Comprometerte con las 20 sesiones antes de evaluar si el formato te resulta útil. Las habilidades se acumulan de sesión en sesión; entrar y salir de forma irregular reduce el beneficio para ti y para el grupo.</p></div></article>
+    <article class="pillar"><div class="number">2</div><div><h3>Práctica entre sesiones</h3><p class="muted">Completar los ejercicios asignados cada semana. Buena parte del cambio ocurre fuera de la sala, en la vida cotidiana, no solo durante la sesión.</p></div></article>
+    <article class="pillar"><div class="number">3</div><div><h3>Autoindagación, no autocrítica</h3><p class="muted">Practicar preguntarte qué no estás dispuesto/a a ver, sentir o expresar, en lugar del hábito de juzgarte y descartar la respuesta antes de examinarla.</p></div></article>
+    <article class="pillar"><div class="number">4</div><div><h3>Apertura a la retroalimentación</h3><p class="muted">Aceptar recibir observaciones del equipo y de otros integrantes sobre tu forma de comunicarte, sin que eso signifique estar de acuerdo automáticamente.</p></div></article>
+    <article class="pillar"><div class="number">5</div><div><h3>Confidencialidad</h3><p class="muted">Lo que otras personas compartan dentro del grupo se queda ahí. Es la base que hace posible el trabajo emocional en un espacio compartido.</p></div></article>
+    <article class="pillar"><div class="number">6</div><div><h3>Disposición a lo poco natural</h3><p class="muted">Probar conductas que al inicio pueden sentirse forzadas —expresar una emoción, cambiar el tono de voz, pedir ayuda en voz alta—. La incomodidad inicial es parte esperada del proceso, no una señal de que algo va mal.</p></div></article>
+  </div>
+</div>
+</section>
+
+<section>
+<div class="container">
+  <div class="cta">
+    <h2>No tienes que cambiar quién eres.</h2>
+    <p>La idea es ampliar tu repertorio: conservar lo que te funciona y aprender nuevas respuestas cuando la rigidez, el aislamiento o el exceso de control ya no te ayudan.</p>
+    <a class="btn" href="#contacto">Preguntar por el proceso</a>
+  </div>
+</div>
+</section>
+
+<section id="faq">
+<div class="container faq">
+  <div class="section-head"><span class="eyebrow">Antes de decidir</span><h2>Preguntas frecuentes</h2></div>
+  <details><summary>¿RO DBT es lo mismo que DBT?</summary><p>No. RO DBT significa <em>Radically Open Dialectical Behavior Therapy</em> (Terapia Dialéctica Conductual Radicalmente Abierta). Comparte raíces con DBT, pero está diseñada específicamente para trabajar patrones asociados con el sobrecontrol y pone un énfasis particular en la apertura, la flexibilidad y la conexión social.</p></details>
+  <details><summary>¿Tengo que tener un diagnóstico para participar?</summary><p>La pertinencia del tratamiento depende de la evaluación clínica y de los objetivos de la persona. No es recomendable decidir únicamente por una lista de síntomas o por un autodiagnóstico.</p></details>
+  <details><summary>¿Qué pasa si me cuesta hablar en grupo?</summary><p>Es completamente válido. El grupo no busca obligarte a revelar cosas personales. El equipo terapéutico debe explicar las reglas de participación, confidencialidad y límites del grupo, y ayudarte a encontrar una forma segura de participar.</p></details>
+  <details><summary>¿Es un tratamiento para personas “frías” o “sin emociones”?</summary><p>No. El sobrecontrol puede coexistir con emociones intensas. El problema no es sentir poco, sino que algunas personas han aprendido a controlar, inhibir o procesar internamente la experiencia de maneras que terminan reduciendo su conexión y flexibilidad.</p></details>
+  <details><summary>¿RO DBT reemplaza otros tratamientos?</summary><p>No necesariamente. La indicación depende de cada caso. Un profesional puede considerar RO DBT como tratamiento principal, complementario o no recomendarlo según las necesidades de la persona.</p></details>
+</div>
+</section>
+
+<section id="contacto">
+<div class="container">
+  <div class="callout">
+    <div><h2>¿Quieres saber si este grupo es para ti?</h2><p>Solicita una entrevista inicial para conocer el enfoque, resolver dudas y revisar si el formato grupal se ajusta a tus objetivos.</p></div>
+    <div class="mini">
+      <strong>Información del proceso</strong><br><br>
+      📅 Frecuencia: <em>Sesiones semanales · 3 módulos, 20 sesiones en total</em><br>
+      🕐 Horario: <em>A confirmar en la entrevista de admisión</em><br>
+      📍 Modalidad: <em>Presencial, ambulatorio en Cuenca</em><br>
+      💬 Contacto: <em>WhatsApp +593 97 884 4591</em>
+    </div>
+  </div>
+  <p class="note" style="margin-top:18px">Esta página tiene finalidad informativa y no sustituye una evaluación psicológica o psiquiátrica. Si estás atravesando una crisis o existe riesgo inmediato para tu seguridad, busca atención de emergencia o servicios de crisis de tu localidad.</p>
+</div>
+</section>
+</main>
+
+<footer>
+<div class="container foot">
+  <div><strong>TRAMA · Psicoterapia y Ciencia</strong><br>Programa grupal RO DBT · información para personas que están explorando un proceso terapéutico.</div>
+  <div>© <span id="year"></span> · Sitio informativo</div>
+</div>
+</footer>
+<script>document.getElementById('year').textContent=new Date().getFullYear();</script>
+</body>
+</html>
