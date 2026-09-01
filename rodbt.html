@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación RO-DBT de Sobrecontrol</title>
+<style>
+:root{--accent:#5b5bd6;--accent-bg:#ececff;--text:#172033;--muted:#667085;--border:#d9dee8;--card:#fff}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text);background:#f6f7fa;line-height:1.45}
+main{max-width:920px;margin:0 auto;padding:28px 18px 50px}
+.panel{background:rgba(255,255,255,.9);border:1px solid var(--border);border-radius:18px;padding:22px;margin-bottom:16px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px}
+.section-title{font-size:1.2rem;font-weight:750;margin:0 0 8px}
+.item-title{font-weight:700;margin-bottom:6px}
+.muted{color:var(--muted)}
+.small{font-size:.9rem}
+.notice{border-left:4px solid var(--accent);background:var(--accent-bg);padding:14px;border-radius:10px}
+.progress{height:8px;background:#e7e9ef;border-radius:999px;overflow:hidden;margin:14px 0 18px}
+.progress span{display:block;height:100%;background:var(--accent);width:25%;transition:width .2s}
+.nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+button{min-height:44px;border-radius:10px;padding:9px 14px;border:1px solid var(--border);background:#fff;color:var(--text);font-weight:650;cursor:pointer}
+button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+button:disabled{opacity:.45;cursor:not-allowed}
+button:focus-visible,input:focus-visible{outline:3px solid rgba(91,91,214,.28);outline-offset:2px}
+.choice-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin-top:10px}
+.choice{position:relative}
+.choice input{position:absolute;opacity:0;pointer-events:none}
+.choice label{display:flex;align-items:center;justify-content:center;text-align:center;min-height:50px;border:1px solid var(--border);border-radius:10px;padding:7px;background:#fff;font-size:.82rem;cursor:pointer}
+.choice input:checked+label{background:var(--accent-bg);border-color:var(--accent);font-weight:750}
+.pair-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pair label{border:1px solid var(--border);border-radius:10px;padding:11px;display:flex;align-items:center;gap:8px;cursor:pointer;background:#fff}
+.pair input{width:18px;height:18px;accent-color:var(--accent)}
+.result-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.score{font-size:2rem;font-weight:800;line-height:1.1}
+.bar{height:10px;background:#e9ebf1;border-radius:999px;overflow:hidden;margin-top:7px}
+.bar span{display:block;height:100%;background:var(--accent);border-radius:999px}
+.hidden{display:none!important}
+.sticky-actions{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:18px}
+hr{border:0;border-top:1px solid var(--border);margin:22px 0}
+@media(max-width:600px){
+  main{padding:18px 12px 40px}
+  .choice-grid{grid-template-columns:repeat(2,1fr)}
+  .pair-grid{grid-template-columns:1fr}
+  .result-grid{grid-template-columns:1fr}
+}
+@media print{
+  body{background:#fff}
+  main{max-width:none;padding:0}
+  .nav,.progress,.sticky-actions,.notice{display:none!important}
+  .panel{border:0;padding:0;margin-bottom:18px}
+  .tab-panel.hidden{display:none!important}
+  #report{display:block!important}
+}
+
+/* Orientación RO-DBT */
+.rodbt-recommendation{margin-top:24px;padding:28px;border-radius:20px;background:linear-gradient(135deg,#f3f2ff 0%,#fafaff 55%,#f1f7ff 100%);border:1px solid #d8d6f5;display:flex;gap:20px;align-items:flex-start;box-shadow:0 8px 28px rgba(40,45,90,.08)}
+.recommendation-icon{flex:0 0 48px;width:48px;height:48px;border-radius:50%;background:#5b5bd6;color:#fff;display:flex;align-items:center;justify-content:center;font-size:25px;font-weight:800}
+.recommendation-content{flex:1}.recommendation-label{font-size:.76rem;letter-spacing:.08em;font-weight:800;color:#5b5bd6;margin-bottom:5px}
+.rodbt-recommendation h2{margin:0 0 12px;font-size:1.55rem;line-height:1.2}.rodbt-recommendation p{margin:8px 0;color:#4f5668}
+.recommendation-subtitle{font-size:1.05rem;font-weight:800;margin:20px 0 7px;color:#252a3a}.recommendation-skills{margin:10px 0 18px;padding-left:23px;color:#4f5668}.recommendation-skills li{margin:7px 0;padding-left:3px}
+.recommendation-next{margin-top:20px;padding:18px;background:rgba(255,255,255,.72);border:1px solid #e0e1ed;border-radius:14px}
+.recommendation-contact{display:flex;flex-direction:column;align-items:center;text-align:center;text-decoration:none;padding:17px 20px;margin-top:15px;border-radius:14px;background:#5b5bd6;color:#fff;transition:transform .15s ease,box-shadow .15s ease}.recommendation-contact:hover{transform:translateY(-1px);box-shadow:0 7px 18px rgba(91,91,214,.25)}
+.contact-small{font-size:.7rem;letter-spacing:.1em;opacity:.82;font-weight:700}.contact-number{font-size:1.45rem;font-weight:800;margin:3px 0}.contact-action{font-size:.86rem;opacity:.92}
+.recommendation-footer{text-align:center;color:#667085;font-size:.78rem;margin-top:12px}.recommendation-reassurance{margin-top:15px;padding:13px 15px;border-radius:11px;background:#f8f8fb;color:#667085;font-size:.86rem;text-align:center}
+@media(max-width:600px){.rodbt-recommendation{padding:20px;gap:13px}.recommendation-icon{flex-basis:38px;width:38px;height:38px;font-size:20px}.rodbt-recommendation h2{font-size:1.3rem}.contact-number{font-size:1.25rem}}
+</style>
+</head>
+<body>
+<main id="rodbt-app">
+<div class="panel">
+  <div style="display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap">
+    <div>
+      <div class="section-title">Evaluación del prototipo de sobrecontrol</div>
+      <div class="muted small">Adaptación autoaplicada basada en el material RO-DBT proporcionado.</div>
+    </div>
+    <div id="stepLabel" class="small muted">Sección 1 de 4</div>
+  </div>
+  <div class="progress" aria-label="Progreso"><span id="progressBar"></span></div>
+  <div class="notice small"><strong>Importante:</strong> esta versión transforma una evaluación clínica del prototipo de sobrecontrol en un formato de autoinforme. Los resultados son orientativos y no constituyen por sí mismos un diagnóstico.</div>
+</div>
+
+<div class="nav" role="tablist" aria-label="Secciones">
+  <button type="button" class="tab primary" data-tab="pairs">1. Estilo de afrontamiento</button>
+  <button type="button" class="tab" data-tab="global">2. Evaluación global</button>
+  <button type="button" class="tab" data-tab="subtypes">3. Subtipos</button>
+  <button type="button" class="tab" data-tab="report">4. Resultado</button>
+</div>
+
+<section id="pairs" class="tab-panel">
+<div class="panel">
+  <div class="section-title">Lista de pares de palabras sobre estilos de afrontamiento</div>
+  <p class="muted small">En cada fila selecciona la opción que te describe mejor. Si dudas, piensa en cómo probablemente te describirían personas que te conocen bien. No hay respuestas correctas o incorrectas.</p>
+  <div id="pairsList"></div>
+  <div class="sticky-actions"><span id="pairsStatus" class="muted small"></span><button type="button" class="primary" id="toGlobal">Continuar a evaluación global →</button></div>
+</div>
+</section>
+
+<section id="global" class="tab-panel hidden">
+<div class="panel">
+  <div class="section-title">Evaluación global del prototipo de sobrecontrol</div>
+  <p class="muted small">Piensa en tu funcionamiento habitual, especialmente durante los últimos meses. Para cada afirmación indica cuánto te describe.</p>
+  <div class="card small" style="margin-bottom:14px"><strong>Escala:</strong> 0 = poco o ningún ajuste · 1 = algo de ajuste · 2 = ajuste moderado · 3 = buen ajuste · 4 = muy buen ajuste.</div>
+  <div id="globalList"></div>
+  <div class="sticky-actions"><button type="button" id="backPairs">← Volver</button><button type="button" class="primary" id="toSubtypes">Calcular y continuar →</button></div>
+</div>
+</section>
+
+<section id="subtypes" class="tab-panel hidden">
+<div class="panel">
+  <div class="section-title">Evaluación de subtipos</div>
+  <div id="subtypeGate" class="notice small"></div>
+  <div id="subtypeContent"></div>
+  <div class="sticky-actions"><button type="button" id="backGlobal">← Volver</button><button type="button" class="primary" id="toReport">Ver reporte →</button></div>
+</div>
+</section>
+
+<section id="report" class="tab-panel hidden">
+<div class="panel">
+  <div class="section-title">Reporte de resultados</div>
+  <div id="reportContent" aria-live="polite"></div>
+  <div class="sticky-actions"><button type="button" id="backSubtypes">← Revisar</button><button type="button" id="printReport">Imprimir / guardar como PDF</button><button type="button" id="resetApp">Reiniciar evaluación</button></div>
+</div>
+</section>
+</main>
+
+<script>
+(function(){
+"use strict";
+const root=document.getElementById("rodbt-app");
+if(!root||root.dataset.initialized==="1")return;
+root.dataset.initialized="1";
+
+const pairData=[
+["Impulsivo","Cauto"],["Poco práctico","Práctico"],["Ingenuo","Malicioso"],["Vulnerable","Reservado"],["Arriesgado","Prudente"],["Platicador","Callado"],["Desobediente","Obediente"],["Idealista","Realista"],["Inestable","Constante"],["Actúa sin pensar","Piensa antes de actuar"],
+["Energético","Controlado"],["Ánimo cambiante","Ánimo estable"],["Desordenado","Ordenado"],["Derrochador","Tacaño"],["Abierto","Tímido"],["Impresionable","Poco impresionable"],["Errático","Predecible"],["Quejoso","Tolerante"],["Reactivo","Poco reactivo"],["Descuidado","Meticuloso"],["Alegre","Serio"],["Torpe","Lúcido"],["Desinhibido","Inhibido"],["Relajado","Trabajador"],["Poco convencional","Convencional"],["Dramático","Modesto"],["Osado","Desapercibido"],["Obvio","Discreto"],["Vacilante","Determinado"],["Fantasioso","Juicioso"],["Crédulo","Perspicaz"],["Impredecible","Confiable"],
+["Dependiente","Independiente"],["Indecente","Respetuoso"],["Desorganizado","Organizado"],["Susceptible","Insensible"],["Inestable","Constante/Tenaz"],["Volátil","Poco demostrativo"],["Emocional","Estoico"],["Poco disciplinado","Decidido"],["Poco metódico","Estructurado"],["Desconsiderado","Considerado"],["Distraído","Atento"],["Efímero","Duradero"],["Animado","Desanimado"],["Apasionado","Indiferente"],["Gratificación instantánea","Gratificación retardada"]
+];
+
+const globalData=[
+["Receptividad y apertura","Hipervigilancia ante estímulos amenazantes, críticos, discrepantes o desorganizados","Me mantengo especialmente alerta ante posibles amenazas, críticas, errores, ambigüedad o situaciones que no puedo prever. Me resulta difícil relajarme cuando las cosas son inciertas o no siguen el orden esperado."],
+["Receptividad y apertura","Tendencia a desacreditar retroalimentación crítica o información nueva","Cuando recibo críticas o información que contradice mi opinión, tiendo a justificarme, encontrar fallas en la fuente o restarle importancia en lugar de considerar seriamente que podría estar equivocado/a."],
+["Flexibilidad de respuesta","Necesidad compulsiva de orden y estructura","Necesito que las cosas estén organizadas, planificadas o estructuradas y experimento malestar cuando otras personas cambian los procedimientos, rompen rutinas o actúan de forma impredecible."],
+["Flexibilidad de respuesta","Planeación o ensayo compulsivos","Dedico mucho tiempo a planificar, anticipar escenarios, ensayar conversaciones o preparar soluciones para evitar errores, incompetencia o situaciones inesperadas; me cuesta modificar un plan una vez establecido."],
+["Expresividad y experiencia emocional","Experiencia y conciencia emocional disminuida","Me cuesta identificar, describir o experimentar claramente mis emociones. Con frecuencia entiendo lo que siento de manera intelectual, minimizo las emociones o solo noto lo que siento cuando la emoción ya es muy intensa."],
+["Expresividad y experiencia emocional","Enmascaramiento de sentimientos","Suelo controlar mi rostro, gestos o conducta para que otras personas no sepan lo que realmente siento. Puedo parecer tranquilo/a, amable o incluso alegre mientras internamente experimento emociones diferentes."],
+["Conectividad social e intimidad","Estilo interpersonal distante y frío","Me cuesta revelar aspectos personales, mostrar vulnerabilidad o establecer intimidad. Puedo sentirme más cómodo/a manteniendo distancia, formalidad y control durante las interacciones sociales."],
+["Conectividad social e intimidad","Valoración elevada de logros, desempeño y competencia","Mi sentido de valor personal depende en gran medida de ser competente, productivo/a o exitoso/a. Me cuesta tolerar errores, parecer incompetente o descansar cuando considero que debería estar produciendo."]
+];
+
+const dissident=[
+"Me importa mucho ser percibido/a como competente, pero no necesito parecer complaciente o agradable.",
+"La aprobación social, la amabilidad o las normas de cortesía no son especialmente importantes para mí si interfieren con mis objetivos.",
+"En público puedo parecer serio/a, poco expresivo/a o inhibido/a, especialmente durante interacciones sociales.",
+"Puedo comportarme amablemente principalmente por deber, etiqueta, conveniencia u objetivos personales, más que por sentir espontáneamente cercanía.",
+"Cuando una meta o regla personal importante se frustra o viola, puedo volverme rápidamente frío/a, distante, indiferente o crítico/a.",
+"Me considero una persona de carácter fuerte y valoro mucho mi capacidad para resistir presión social o conflictos interpersonales.",
+"Me resulta difícil comunicar afecto, necesidades de afiliación o emociones vulnerables; incluso las muestras públicas de afecto pueden incomodarme.",
+"Me cuesta disculparme, elogiar o ayudar a otras personas; también puedo desconfiar de las disculpas o elogios que recibo.",
+"Otras personas pueden percibirme como distante o arrogante. Tiendo a valorar la competencia por encima de la relación y puedo considerar la intimidad una pérdida de tiempo."
+];
+
+const compliant=[
+"Me motiva mucho ser percibido/a como competente y socialmente aceptable.",
+"Vigilo mucho mi propio comportamiento en busca de señales de ansiedad y observo a los demás para detectar señales de desaprobación.",
+"Puedo mostrar expresiones que no coinciden con lo que siento para evitar rechazo; por ejemplo, sonreír cuando estoy angustiado/a.",
+"Puedo evitar revelar información personal o verdadera vulnerabilidad y compensarlo haciendo muchas preguntas, mostrando interés o humildad de forma estratégica.",
+"Puedo aceptar rápidamente una opinión, admitir una derrota o elogiar a alguien aunque internamente esté en desacuerdo, para evitar conflicto o desaprobación.",
+"Puedo sentir resentimiento cuando mi actitud excesivamente solidaria no es reconocida, aunque normalmente intento ocultar ese sentimiento.",
+"Puedo esforzarme mucho por convencer a otras personas, incluido un terapeuta, de que estoy bien o de que no tengo problemas importantes.",
+"Puedo ensayar obsesivamente cómo comportarme antes de situaciones sociales que requieren espontaneidad; deseo reconocimiento, pero no necesariamente ser el centro de atención.",
+"Después de eventos sociales puedo sentirme profundamente agotado/a por mantener durante mucho tiempo una imagen de aceptabilidad y necesitar aislarme para recuperarme."
+];
+
+const answers={pairs:{},global:{},dissident:{},compliant:{}};
+
+function renderPairs(){
+const box=root.querySelector("#pairsList");box.innerHTML="";
+pairData.forEach((p,i)=>{
+const row=document.createElement("div");row.className="pair-grid";
+const wrap=document.createElement("div");wrap.className="pair";
+[0,1].forEach(side=>{
+const lab=document.createElement("label");
+const inp=document.createElement("input");inp.type="radio";inp.name="pair"+i;inp.value=side;inp.checked=answers.pairs[i]===side;
+inp.addEventListener("change",()=>{answers.pairs[i]=side;updatePairStatus()});
+lab.append(inp,document.createTextNode(p[side]));wrap.appendChild(lab);
+});
+row.appendChild(wrap);box.appendChild(row);
+});
+updatePairStatus();
+}
+function updatePairStatus(){
+const n=Object.keys(answers.pairs).length;
+root.querySelector("#pairsStatus").textContent=n+" de "+pairData.length+" pares respondidos";
+root.querySelector("#toGlobal").disabled=n!==pairData.length;
+}
+
+function ratingHTML(section,items){
+const box=document.createElement("div");
+items.forEach((it,i)=>{
+const card=document.createElement("div");card.className="card";card.style.marginBottom="12px";
+const title=document.createElement("div");title.className="item-title";title.textContent=(i+1)+". "+it.t;
+const q=document.createElement("div");q.className="small";q.textContent=it.q;
+const grid=document.createElement("div");grid.className="choice-grid";
+["0 · Nada","1 · Algo","2 · Moderado","3 · Bueno","4 · Muy alto"].forEach((txt,v)=>{
+const c=document.createElement("div");c.className="choice";
+const inp=document.createElement("input");inp.type="radio";inp.name=section+i;inp.value=v;inp.id=section+i+"-"+v;inp.checked=answers[section][i]===v;
+inp.addEventListener("change",()=>{answers[section][i]=v;updateStatus(section)});
+const lab=document.createElement("label");lab.htmlFor=inp.id;lab.textContent=txt;
+c.append(inp,lab);grid.appendChild(c);
+});
+card.append(title,q,grid);box.appendChild(card);
+});
+return box;
+}
+function updateStatus(section){
+if(section==="global"){
+const n=Object.keys(answers.global).length;
+const btn=root.querySelector("#toSubtypes");
+btn.disabled=n!==globalData.length;
+btn.textContent=n===globalData.length?"Calcular y continuar →":"Responde "+(globalData.length-n)+" ítem(s) más";
+}
+}
+function renderGlobal(){
+const box=root.querySelector("#globalList");box.innerHTML="";
+let last="";
+globalData.forEach(it=>{
+if(it[0]!==last){const h=document.createElement("h3");h.className="section-title";h.style.marginTop="22px";h.textContent=it[0];box.appendChild(h);last=it[0];}
+});
+box.appendChild(ratingHTML("global",globalData.map(x=>({t:x[1],q:x[2]}))));
+updateStatus("global");
+}
+function scoreSection(key){return Object.values(answers[key]).reduce((a,b)=>a+Number(b),0)}
+function globalScore(){return scoreSection("global")}
+function globalDomains(){
+const vals={};
+globalData.forEach((x,i)=>{vals[x[0]]=(vals[x[0]]||0)+Number(answers.global[i]||0)});
+return vals;
+}
+function renderSubtypes(){
+const total=globalScore(),gate=root.querySelector("#subtypeGate"),content=root.querySelector("#subtypeContent");
+content.innerHTML="";
+if(total<17){
+gate.innerHTML="<strong>Puntuación global: "+total+"/32.</strong> El material original reserva la evaluación de subtipos para puntuaciones globales de 17 o más. Por ello, en esta adaptación no se activa la sección de subtipos.";
+return;
+}
+gate.innerHTML="<strong>Puntuación global: "+total+"/32.</strong> El umbral de 17 puntos activa la exploración de los dos subtipos. Esto no implica que exista necesariamente un subtipo clínicamente establecido.";
+const h1=document.createElement("h3");h1.className="section-title";h1.textContent="Subtipo excesivamente disidente";content.appendChild(h1);
+content.appendChild(ratingHTML("dissident",dissident.map(q=>({t:q,q:"Indica cuánto te describe esta característica en tu funcionamiento habitual."}))));
+const h2=document.createElement("h3");h2.className="section-title";h2.style.marginTop="28px";h2.textContent="Subtipo excesivamente complaciente";content.appendChild(h2);
+content.appendChild(ratingHTML("compliant",compliant.map(q=>({t:q,q:"Indica cuánto te describe esta característica en tu funcionamiento habitual."}))));
+}
+function interpretation(n){
+if(n<=7)return["SC improbable","La puntuación queda dentro del rango que el material identifica como poco compatible con el prototipo."];
+if(n<=16)return["SC bajo o moderado","Se observan algunas características compatibles con el prototipo, pero el ajuste global es limitado o moderado."];
+if(n<=24)return["Buen ajuste para SC","Existe un patrón considerable de características compatibles con el prototipo de sobrecontrol."];
+return["Ejemplifica SC","La puntuación muestra un ajuste muy elevado al conjunto de características del prototipo."];
+}
+function report(){
+const total=globalScore(),[label,text]=interpretation(total),domains=globalDomains();
+let html='<div class="result-grid">';
+html+='<div class="card"><div class="muted small">Puntuación global</div><div class="score">'+total+' / 32</div><strong>'+label+'</strong><p class="small muted">'+text+'</p></div>';
+const a=Object.values(answers.pairs).filter(v=>v===0).length,b=Object.values(answers.pairs).filter(v=>v===1).length;
+html+='<div class="card"><div class="muted small">Estilo de afrontamiento</div><div style="font-size:1.15rem;font-weight:750">A: '+a+' · B: '+b+'</div><p class="small muted">A refleja el lado izquierdo de cada par y B el lado derecho. Esta sección se presenta descriptivamente y no tiene un punto de corte diagnóstico.</p></div></div>';
+html+='<div class="card" style="margin-top:14px"><div class="item-title">Perfil por dominios</div>';
+Object.entries(domains).forEach(([k,v])=>{html+='<div style="margin-top:13px"><div style="display:flex;justify-content:space-between;gap:10px"><span>'+k+'</span><strong>'+v+'/8</strong></div><div class="bar"><span style="width:'+Math.round(v/8*100)+'%"></span></div></div>'});
+html+='</div>';
+if(total>=17){
+const d=scoreSection("dissident"),c=scoreSection("compliant");
+html+='<div class="result-grid" style="margin-top:14px"><div class="card"><div class="muted small">Excesivamente disidente</div><div class="score">'+d+' / 36</div><div class="bar"><span style="width:'+Math.round(d/36*100)+'%"></span></div></div><div class="card"><div class="muted small">Excesivamente complaciente</div><div class="score">'+c+' / 36</div><div class="bar"><span style="width:'+Math.round(c/36*100)+'%"></span></div></div></div>';
+html+='<div class="notice small" style="margin-top:14px"><strong>Lectura del subtipo:</strong> estas puntuaciones son indicadores descriptivos. El material proporcionado no establece en estas páginas un punto de corte específico para determinar qué subtipo debe diagnosticarse.</div>';
+html+='<div class="rodbt-recommendation" role="region" aria-label="Orientación según tus resultados">'
++'<div class="recommendation-icon">♡</div>'
++'<div class="recommendation-content">'
++'<div class="recommendation-label">¿QUÉ SIGNIFICAN TUS RESULTADOS?</div>'
++'<h2>Podrías beneficiarte del entrenamiento en habilidades RO-DBT</h2>'
++'<p>Tus respuestas sugieren la presencia de <strong>algunos rasgos asociados al sobrecontrol</strong>, como una tendencia a mantener un alto autocontrol, dificultad para flexibilizar, expresar emociones, pedir ayuda, adaptarte a los cambios o conectar espontáneamente con otras personas.</p>'
++'<p>Esto <strong>no constituye un diagnóstico</strong>. Sin embargo, si reconoces estas características en tu manera de relacionarte contigo mismo/a y con los demás, podrías beneficiarte del entrenamiento en habilidades <strong>RO-DBT</strong>.</p>'
++'<div class="recommendation-subtitle">¿Qué puedes trabajar en el entrenamiento?</div>'
++'<p>El entrenamiento está orientado a desarrollar habilidades para:</p>'
++'<ul class="recommendation-skills">'
++'<li>Aumentar la flexibilidad psicológica y conductual.</li>'
++'<li>Reconocer y expresar emociones de manera más efectiva.</li>'
++'<li>Mejorar la conexión y comunicación interpersonal.</li>'
++'<li>Aprender a recibir y expresar validación.</li>'
++'<li>Manejar situaciones sociales con mayor apertura.</li>'
++'<li>Equilibrar autocontrol con espontaneidad.</li>'
++'<li>Desarrollar mayor apertura a nuevas perspectivas y experiencias.</li>'
++'</ul>'
++'<p>Si deseas profundizar en estas habilidades y aprender <strong>herramientas prácticas para aplicarlas en tu vida cotidiana</strong>, puedes conocer nuestro programa de entrenamiento en habilidades RO-DBT.</p>'
++'<div class="recommendation-next"><div class="recommendation-subtitle">¿Quieres dar el siguiente paso?</div>'
++'<p>Descarga tus resultados y compártelos con nuestro equipo para recibir más información sobre el programa y conocer si este entrenamiento puede ser adecuado para ti.</p>'
++'<a class="recommendation-contact" href="tel:+593978844591" aria-label="Contactar al +593 978 844 591"><span class="contact-small">CONTACTO</span><span class="contact-number">+593 978 844 591</span><span class="contact-action">Solicitar información →</span></a>'
++'<div class="recommendation-footer"><strong>Primero descarga tu informe en PDF.</strong> Luego puedes enviarlo al contactar con el equipo.</div></div>'
++'<div class="recommendation-reassurance">No necesitas tener un diagnóstico para consultar. El primer paso puede ser simplemente conversar y conocer cómo funciona RO-DBT.</div>'
++'</div></div>';
+}
+html+='<div class="card" style="margin-top:14px"><div class="item-title">Nota clínica</div><p class="small muted">El resultado debe interpretarse junto con entrevista, historia clínica, funcionamiento interpersonal y contexto. Esta adaptación autoaplicada no sustituye una evaluación profesional ni equivale a un diagnóstico.</p></div>';
+root.querySelector("#reportContent").innerHTML=html;
+}
+function show(tab){
+const order=["pairs","global","subtypes","report"],idx=order.indexOf(tab);
+root.querySelectorAll(".tab-panel").forEach(x=>x.classList.toggle("hidden",x.id!==tab));
+root.querySelectorAll(".tab").forEach(x=>x.classList.toggle("primary",x.dataset.tab===tab));
+root.querySelector("#progressBar").style.width=((idx+1)/4*100)+"%";
+root.querySelector("#stepLabel").textContent="Sección "+(idx+1)+" de 4";
+if(tab==="global")renderGlobal();
+if(tab==="subtypes")renderSubtypes();
+if(tab==="report")report();
+}
+root.querySelectorAll(".tab").forEach(btn=>btn.addEventListener("click",()=>show(btn.dataset.tab)));
+root.querySelector("#toGlobal").addEventListener("click",()=>show("global"));
+root.querySelector("#backPairs").addEventListener("click",()=>show("pairs"));
+root.querySelector("#toSubtypes").addEventListener("click",()=>show("subtypes"));
+root.querySelector("#backGlobal").addEventListener("click",()=>show("global"));
+root.querySelector("#toReport").addEventListener("click",()=>show("report"));
+root.querySelector("#backSubtypes").addEventListener("click",()=>show("subtypes"));
+root.querySelector("#printReport").addEventListener("click",()=>window.print());
+root.querySelector("#resetApp").addEventListener("click",()=>{
+if(confirm("¿Reiniciar toda la evaluación? Se perderán las respuestas actuales.")){
+Object.keys(answers).forEach(k=>answers[k]={});renderPairs();show("pairs");
+}
+});
+renderPairs();show("pairs");
+})();
+</script>
+</body>
+</html>
